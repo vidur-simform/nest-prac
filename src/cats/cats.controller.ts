@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, ForbiddenException, UseFilters, ParseIntPipe } from '@nestjs/common';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
+import { HttpExceptionFilter } from 'src/http-exception.filter';
 
 @Controller('cats')
 export class CatsController {
@@ -14,11 +15,11 @@ export class CatsController {
 
   @Get()
   findAll() {
-    throw new ForbiddenException("fb",{});
+    throw new ForbiddenException();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id',new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: string) {
     return this.catsService.findOne(+id);
   }
 
