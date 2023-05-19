@@ -3,7 +3,7 @@ import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
 import { Cat } from './interfaces/cat.interface';
 
-// @Injectable()
+@Injectable()
 export class CatsService {
     private readonly cats: Cat[] = [];
 

@@ -2,11 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { DogsService } from './dogs.service';
 import { CreateDogDto } from './dto/create-dog.dto';
 import { UpdateDogDto } from './dto/update-dog.dto';
-import { CatsService } from 'src/cats/cats.service';
 
 @Controller('dogs')
 export class DogsController {
-  constructor(private readonly dogsService: DogsService, private readonly catsService:CatsService) {}
+  constructor(private readonly dogsService: DogsService) {}
 
   @Post()
   create(@Body() createDogDto: CreateDogDto) {
@@ -15,7 +14,7 @@ export class DogsController {
 
   @Get()
   findAll() {
-    return this.catsService.findAll();
+    return this.dogsService.findAll();
   }
 
   @Get(':id')

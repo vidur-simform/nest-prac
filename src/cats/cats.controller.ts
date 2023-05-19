@@ -1,26 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, ForbiddenException, UseFilters, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, ForbiddenException, UseFilters,  UsePipes, PipeTransform, ArgumentMetadata, BadRequestException, ParseIntPipe, DefaultValuePipe, Query } from '@nestjs/common';
 import { CatsService } from './cats.service';
-import { CreateCatDto } from './dto/create-cat.dto';
+import { CreateCatDto,createCatSchema } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
-import { HttpExceptionFilter } from 'src/http-exception.filter';
-
+// import { HttpExceptionFilter } from 'src/http-exception.filter';
+import { JoiValidationPipe } from './cats.joivalidator';
+// class ParseIntPipe implements PipeTransform<string, number> {
+//   transform(value: string, metadata: ArgumentMetadata): number {
+//     const val = parseInt(value, 10);
+//     if (isNaN(val)) {
+//       throw new BadRequestException('Validation failed');
+//     }
+//     return val;
+//   }
+// }
 @Controller('cats')
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
   @Post()
+  @UsePipes(new JoiValidationPipe(createCatSchema))
   create(@Body() createCatDto: CreateCatDto) {
     return this.catsService.create(createCatDto);
   }
 
-  @Get()
+  @Get('z')
   findAll() {
-    throw new ForbiddenException();
+    return this.catsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id',new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: string) {
-    return this.catsService.findOne(+id);
+  @Get()
+  findOne(@Query('id',new DefaultValuePipe(0),new ParseIntPipe()) id: string) {
+
+
+
   }
 
   @Patch(':id')
